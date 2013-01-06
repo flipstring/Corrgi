@@ -1,8 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Standard Assets/Scripts/Camera Scripts/SmoothFollow.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Corrgi Assets\Scripts\UIGame.js">
     <Files>
-      <File FileName="Assets/Standard Assets/Scripts/Camera Scripts/SmoothFollow.js" Line="36" Column="19" />
+      <File FileName="Assets\Corrgi Assets\Scripts\UIGame.js" Line="14" Column="1" />
+      <File FileName="Assets\Standard Assets\Scripts\Camera Scripts\SmoothFollow.js" Line="36" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -52,6 +52,7 @@
      <Compile Include="Assets\6by7\ProGrids\Scripts\ProGrids.js" />
      <Compile Include="Assets\6by7\UVTool\JS\Classes\UVSettings.js" />
      <Compile Include="Assets\6by7\UVTool\JS\UV.js" />
+     <Compile Include="Assets\Corrgi Assets\Scripts\UIGame.js" />
      <None Include="Assets\6by7\_README-ProBuilder-Free.txt" />
      <None Include="Assets\6by7\_README-ProGrids-Free.txt" />
  <Reference Include="Assembly-UnityScript-firstpass">
