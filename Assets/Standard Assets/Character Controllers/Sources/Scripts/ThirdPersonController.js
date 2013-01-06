@@ -3,12 +3,9 @@
 @script RequireComponent(CharacterController)
 
 public var idleAnimation : AnimationClip;
-public var walkAnimation : AnimationClip;
 public var runAnimation : AnimationClip;
 public var jumpPoseAnimation : AnimationClip;
 
-public var walkMaxAnimationSpeed : float = 0.75;
-public var trotMaxAnimationSpeed : float = 1.0;
 public var runMaxAnimationSpeed : float = 1.0;
 public var jumpAnimationSpeed : float = 1.15;
 public var landAnimationSpeed : float = 1.0;
@@ -17,18 +14,12 @@ private var _animation : Animation;
 
 enum CharacterState {
 	Idle = 0,
-	Walking = 1,
-	Trotting = 2,
 	Running = 3,
 	Jumping = 4,
 }
 
 private var _characterState : CharacterState;
 
-// The speed when walking
-var walkSpeed = 2.0;
-// after trotAfterSeconds of walking we trot with trotSpeed
-var trotSpeed = 4.0;
 // when pressing "Fire3" button (cmd) we start running
 var runSpeed = 6.0;
 
@@ -43,6 +34,7 @@ var gravity = 20.0;
 var speedSmoothing = 10.0;
 var rotateSpeed = 500.0;
 var trotAfterSeconds = 3.0;
+var pawnTurnSpeed : float = 3.0;
 
 var canJump = true;
 
@@ -71,8 +63,7 @@ private var jumpingReachedApex = false;
 private var movingBack = false;
 // Is the user pressing any keys?
 private var isMoving = false;
-// When did the user start walking (Used for going into trot after a while)
-private var walkTimeStart = 0.0;
+
 // Last time the jump button was clicked down
 private var lastJumpButtonTime = -10.0;
 // Last time we performed a jump
@@ -100,17 +91,12 @@ function Awake ()
 	
 	/*
 public var idleAnimation : AnimationClip;
-public var walkAnimation : AnimationClip;
 public var runAnimation : AnimationClip;
 public var jumpPoseAnimation : AnimationClip;	
 	*/
 	if(!idleAnimation) {
 		_animation = null;
 		Debug.Log("No idle animation found. Turning off animations.");
-	}
-	if(!walkAnimation) {
-		_animation = null;
-		Debug.Log("No walk animation found. Turning off animations.");
 	}
 	if(!runAnimation) {
 		_animation = null;
@@ -138,23 +124,21 @@ function UpdateSmoothedMovementDirection ()
 	// Always orthogonal to the forward vector
 	var right = Vector3(forward.z, 0, -forward.x);
 
-	var v = Input.GetAxisRaw("Vertical");
 	var h = Input.GetAxisRaw("Horizontal");
-
-	// Are we moving backwards or looking backwards
-	if (v < -0.2)
-		movingBack = true;
-	else
-		movingBack = false;
 	
 	var wasMoving = isMoving;
-	isMoving = Mathf.Abs (h) > 0.1 || Mathf.Abs (v) > 0.1;
+	isMoving = Mathf.Abs (h) > 0.1;
 		
 	// Target direction relative to the camera
-	var targetDirection = h * right + v * forward;
-	
+	var targetDirection = h * right + forward;
+	// Lock camera while in air
+	if (jumping)
+	{
+		lockCameraTimer = 0.0;
+		inAirVelocity += targetDirection.normalized * Time.deltaTime * inAirControlAcceleration;
+	}
 	// Grounded controls
-	if (grounded)
+	else if (grounded)
 	{
 		// Lock camera for short period when transitioning moving & standing still
 		lockCameraTimer += Time.deltaTime;
@@ -166,7 +150,9 @@ function UpdateSmoothedMovementDirection ()
 		// moveDirection is always normalized, and we only update it if there is user input.
 		if (targetDirection != Vector3.zero)
 		{
-				moveDirection = Vector3.RotateTowards(moveDirection, targetDirection, rotateSpeed * Mathf.Deg2Rad * Time.deltaTime, 1000);
+				//moveDirection.eulerAngles.y = 115;
+				moveDirection = Quaternion.AngleAxis(h * pawnTurnSpeed, Vector3.up) * moveDirection;
+				//moveDirection = Vector3.RotateTowards(moveDirection, targetDirection, rotateSpeed * Mathf.Deg2Rad * Time.deltaTime, 1000);
 				moveDirection = moveDirection.normalized;
 		}
 		
@@ -177,44 +163,16 @@ function UpdateSmoothedMovementDirection ()
 		//* We want to support analog input but make sure you cant walk faster diagonally than just forward or sideways
 		var targetSpeed = Mathf.Min(targetDirection.magnitude, 1.0);
 	
-		_characterState = CharacterState.Idle;
+		// ## This gets completely trashed in the original script. Amazing.
+		//_characterState = CharacterState.Idle;
 		
 		// Pick speed modifier
-		if (Input.GetKey (KeyCode.LeftShift) | Input.GetKey (KeyCode.RightShift))
-		{
-			targetSpeed *= runSpeed;
-			_characterState = CharacterState.Running;
-		}
-		else if (Time.time - trotAfterSeconds > walkTimeStart)
-		{
-			targetSpeed *= trotSpeed;
-			_characterState = CharacterState.Trotting;
-		}
-		else
-		{
-			targetSpeed *= walkSpeed;
-			_characterState = CharacterState.Walking;
-		}
+		targetSpeed *= runSpeed;
+		_characterState = CharacterState.Running;
 		
 		moveSpeed = Mathf.Lerp(moveSpeed, targetSpeed, curSmooth);
-		
-		// Reset walk time start when we slow down
-		if (moveSpeed < walkSpeed * 0.3)
-			walkTimeStart = Time.time;
-	}
-	// In air controls
-	else
-	{
-		// Lock camera while in air
-		if (jumping)
-			lockCameraTimer = 0.0;
 
-		if (isMoving)
-			inAirVelocity += targetDirection.normalized * Time.deltaTime * inAirControlAcceleration;
-	}
-	
-
-		
+	}	
 }
 
 

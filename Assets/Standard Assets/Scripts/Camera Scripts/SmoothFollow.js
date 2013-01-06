@@ -56,7 +56,7 @@ function LateUpdate ()
 	transform.LookAt (target);
 	
 	// add in some rudimentary lookahead
-	var lookAhead : Vector3 = Vector3.Lerp(lastLookahead, target.transform.forward * 2, 0.01);
+	var lookAhead : Vector3 = Vector3.Lerp(lastLookahead, target.transform.forward * 2, Time.deltaTime);
 	lookAhead.y = 0;
 	transform.position = Vector3.Lerp(transform.position, transform.position - lookAhead, 1);
 	
