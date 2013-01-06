@@ -96,7 +96,7 @@ function Awake ()
 	
 	_animation = GetComponent(Animation);
 	if(!_animation)
-		Debug.Log("The character you would like to control doesn't have animations. Moving her might look weird.");
+		Debug.Log("The character you would like to control doesn't have animations. Moving them might look weird.");
 	
 	/*
 public var idleAnimation : AnimationClip;
@@ -166,18 +166,8 @@ function UpdateSmoothedMovementDirection ()
 		// moveDirection is always normalized, and we only update it if there is user input.
 		if (targetDirection != Vector3.zero)
 		{
-			// If we are really slow, just snap to the target direction
-			if (moveSpeed < walkSpeed * 0.9 && grounded)
-			{
-				moveDirection = targetDirection.normalized;
-			}
-			// Otherwise smoothly turn towards it
-			else
-			{
 				moveDirection = Vector3.RotateTowards(moveDirection, targetDirection, rotateSpeed * Mathf.Deg2Rad * Time.deltaTime, 1000);
-				
 				moveDirection = moveDirection.normalized;
-			}
 		}
 		
 		// Smooth the speed based on the current target direction
@@ -321,57 +311,39 @@ function Update() {
 	if(_animation) {
 		if(_characterState == CharacterState.Jumping) 
 		{
-			if(!jumpingReachedApex) {
-				_animation[jumpPoseAnimation.name].speed = jumpAnimationSpeed;
-				_animation[jumpPoseAnimation.name].wrapMode = WrapMode.ClampForever;
-				_animation.CrossFade(jumpPoseAnimation.name);
-			} else {
-				_animation[jumpPoseAnimation.name].speed = -landAnimationSpeed;
-				_animation[jumpPoseAnimation.name].wrapMode = WrapMode.ClampForever;
-				_animation.CrossFade(jumpPoseAnimation.name);				
-			}
+				_animation.CrossFade(idleAnimation.name);
+				_animation[idleAnimation.name].time = 5;
+				_animation[idleAnimation.name].speed = 0;
 		} 
 		else 
 		{
-			if(controller.velocity.sqrMagnitude < 0.1) {
+			if(controller.velocity.sqrMagnitude < 0.1) 
+			{
 				_animation.CrossFade(idleAnimation.name);
+				_animation[idleAnimation.name].time = 0;
+				_animation[idleAnimation.name].speed = 0;
 			}
 			else 
 			{
-				if(_characterState == CharacterState.Running) {
-					_animation[runAnimation.name].speed = Mathf.Clamp(controller.velocity.magnitude, 0.0, runMaxAnimationSpeed);
-					_animation.CrossFade(runAnimation.name);	
-				}
-				else if(_characterState == CharacterState.Trotting) {
-					_animation[walkAnimation.name].speed = Mathf.Clamp(controller.velocity.magnitude, 0.0, trotMaxAnimationSpeed);
-					_animation.CrossFade(walkAnimation.name);	
-				}
-				else if(_characterState == CharacterState.Walking) {
-					_animation[walkAnimation.name].speed = Mathf.Clamp(controller.velocity.magnitude, 0.0, walkMaxAnimationSpeed);
-					_animation.CrossFade(walkAnimation.name);	
-				}
-				
+				_animation[runAnimation.name].speed = Mathf.Clamp(controller.velocity.magnitude, 0.0, runMaxAnimationSpeed);
+				_animation.CrossFade(runAnimation.name);	
 			}
 		}
 	}
 	// ANIMATION sector
 	
 	// Set rotation to the move direction
-	if (IsGrounded())
+	// ## bring back 'movement' for air control
+	if(IsGrounded())
 	{
-		
+		moveDirection.y = 0;
+	}
+	
+	if (moveDirection.sqrMagnitude > 0.001)
+	{
 		transform.rotation = Quaternion.LookRotation(moveDirection);
-			
-	}	
-	else
-	{
-		var xzMove = movement;
-		xzMove.y = 0;
-		if (xzMove.sqrMagnitude > 0.001)
-		{
-			transform.rotation = Quaternion.LookRotation(xzMove);
-		}
-	}	
+		transform.rotation *= Quaternion.EulerRotation(0,-3.14,0);
+	}
 	
 	// We are in jump mode but just became grounded
 	if (IsGrounded())
