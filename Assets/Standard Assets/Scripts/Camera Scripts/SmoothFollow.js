@@ -23,7 +23,8 @@ var rotationDamping = 3.0;
 @script AddComponentMenu("Camera-Control/Smooth Follow")
 
 
-function LateUpdate () {
+function LateUpdate () 
+{
 	// Early out if we don't have a target
 	if (!target)
 		return;
