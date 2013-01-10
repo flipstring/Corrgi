@@ -31,6 +31,7 @@ var jumpHeight = 0.5;
 
 // The gravity for the character
 var gravity = 20.0;
+
 // The gravity in controlled descent mode
 var speedSmoothing = 10.0;
 var rotateSpeed = 500.0;
@@ -47,7 +48,7 @@ private var groundedTimeout = 0.25;
 private var lockCameraTimer = 0.0;
 
 // The current move direction in x-z
-private var moveDirection = Vector3.zero;
+var moveDirection = Vector3.zero;
 // The current vertical speed
 private var verticalSpeed = 0.0;
 // The current x-z move speed
@@ -74,9 +75,9 @@ private var lastJumpTime = -1.0;
 // the height we jumped from (Used to determine for how long to apply extra jump power after jumping.)
 private var lastJumpStartHeight = 0.0;
 
-
 private var inAirVelocity = Vector3.zero;
 private var lastGroundedTime = 0.0;
+
 var isControllable = false;
 
 function Awake ()
@@ -86,12 +87,7 @@ function Awake ()
 	_animation = GetComponent(Animation);
 	if(!_animation)
 		Debug.Log("The character you would like to control doesn't have animations. Moving them might look weird.");
-	
-	/*
-public var idleAnimation : AnimationClip;
-public var runAnimation : AnimationClip;
-public var jumpPoseAnimation : AnimationClip;	
-	*/
+
 	if(!idleAnimation) {
 		_animation = null;
 		Debug.Log("No idle animation found. Turning off animations.");
@@ -129,17 +125,20 @@ function UpdateSmoothedMovementDirection ()
 		
 	// Target direction relative to the camera
 	var targetDirection = h * right + forward;
+	
 	// Lock camera while in air
 	if (jumping)
 	{
 		lockCameraTimer = 0.0;
 		inAirVelocity += targetDirection.normalized * Time.deltaTime * inAirControlAcceleration;
 	}
+	
 	// Grounded controls
 	else if (grounded)
 	{
 		// Lock camera for short period when transitioning moving & standing still
 		lockCameraTimer += Time.deltaTime;
+		
 		if (isMoving != wasMoving)
 			lockCameraTimer = 0.0;
 
@@ -148,8 +147,7 @@ function UpdateSmoothedMovementDirection ()
 		// moveDirection is always normalized, and we only update it if there is user input.
 		if (targetDirection != Vector3.zero)
 		{
-				//moveDirection.eulerAngles.y = 115;
-				moveDirection = Quaternion.AngleAxis(h * pawnTurnSpeed, Vector3.up) * moveDirection;
+				moveDirection = Quaternion.AngleAxis(h * (rotateSpeed * Time.deltaTime), Vector3.up) * moveDirection;
 				//moveDirection = Vector3.RotateTowards(moveDirection, targetDirection, rotateSpeed * Mathf.Deg2Rad * Time.deltaTime, 1000);
 				moveDirection = moveDirection.normalized;
 		}
@@ -194,8 +192,8 @@ function ApplyJumping ()
 
 function ApplyGravity ()
 {
-	if (isControllable)	// don't move player at all if not controllable.
-	{
+	//if (isControllable)	// don't move player at all if not controllable.
+	//{
 		// Apply gravity
 		var jumpButton = Input.GetButton("Jump");
 		
@@ -211,7 +209,7 @@ function ApplyGravity ()
 			verticalSpeed = 0.0;
 		else
 			verticalSpeed -= gravity * Time.deltaTime;
-	}
+	//}
 }
 
 function CalculateJumpVerticalSpeed (targetJumpHeight : float)
@@ -238,6 +236,8 @@ function Update() {
 	{
 		// kill all inputs if not controllable.
 		Input.ResetInputAxes();
+		ApplyGravity();
+		return;
 	}
 
 	if (Input.GetButtonDown ("Jump"))

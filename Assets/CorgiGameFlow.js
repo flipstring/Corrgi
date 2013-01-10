@@ -45,6 +45,11 @@ function Update ()
 
 function StartRound()
 {
+	// teleport to start
+	playerRef.transform.position = GameObject.Find("Start").transform.position;
+    playerRef.GetComponent(ThirdPersonController).moveDirection = Vector3.right;
+
+
     playerRef.GetComponent(ThirdPersonController).isControllable = true;
    	roundTimeRemaining = roundTime;
 	gameState = GameState.ActiveGame;

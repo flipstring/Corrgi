@@ -26,4 +26,6 @@ function OnGUI ()
 			}
 		}
 	}
+	else
+		GUI.TextField(Rect (256,256,768,512), "Hit Fire1 (ctrl) to start");
 }
