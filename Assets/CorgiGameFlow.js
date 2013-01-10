@@ -7,12 +7,12 @@ enum GameState
 	PostGame = 2,
 };
 
-var roundTime : int = 120;
+var roundTime : float = 120;
 var gameState : GameState = GameState.PreGame; 
 var playerRef : GameObject;
 
 /// private
-private var roundTimeRemaining : int;
+var roundTimeRemaining : float;
 
 function Start () 
 {

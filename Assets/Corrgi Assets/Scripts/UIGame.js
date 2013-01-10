@@ -1,7 +1,7 @@
 #pragma strict
 
 var timeMeterTexture : Texture2D;
-var timeMeterGranularity : int = 12;
+var timeMeterGranularity : float = 12;
 
 function Start () {
 
@@ -11,12 +11,19 @@ function Start () {
 function OnGUI () 
 {
 	var uiScale : float = Screen.height / 720.0f;
-
+	var timeRemaining : float = GetComponent(CorgiGameFlow).roundTimeRemaining;
+	var timePerChunk : float = GetComponent(CorgiGameFlow).roundTime / timeMeterGranularity;
+	//Debug.Log(timeRemaining);
 	// Build the meter
-	for(var i : int = 0; i < timeMeterGranularity; i++)
+	if(GetComponent(CorgiGameFlow).gameState == GameState.ActiveGame)
 	{
-		var timeMeterScale : float = (700 / timeMeterGranularity) * uiScale;
-		
-		GUI.Label (Rect (32,timeMeterScale + (i*(timeMeterScale * 0.75)),timeMeterScale,timeMeterScale), timeMeterTexture);
+		for(var i : int = 0; i < timeMeterGranularity; i++)
+		{
+			if(Mathf.Floor(i * timePerChunk) < timeRemaining)
+			{
+				var timeMeterScale : float = (700 / timeMeterGranularity) * uiScale;
+				GUI.Label (Rect (32,timeMeterScale + (i*(timeMeterScale * 0.75)),timeMeterScale,timeMeterScale), timeMeterTexture);
+			}
+		}
 	}
 }
