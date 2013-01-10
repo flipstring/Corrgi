@@ -12,7 +12,8 @@ public var landAnimationSpeed : float = 1.0;
 
 private var _animation : Animation;
 
-enum CharacterState {
+enum CharacterState 
+{
 	Idle = 0,
 	Running = 3,
 	Jumping = 4,
@@ -75,11 +76,8 @@ private var lastJumpStartHeight = 0.0;
 
 
 private var inAirVelocity = Vector3.zero;
-
 private var lastGroundedTime = 0.0;
-
-
-private var isControllable = true;
+var isControllable = false;
 
 function Awake ()
 {
