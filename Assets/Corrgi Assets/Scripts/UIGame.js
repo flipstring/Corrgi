@@ -25,7 +25,7 @@ function OnGUI ()
 			if(Mathf.Floor(i * timePerChunk) < timeRemaining)
 			{
 				var timeMeterScale : float = (700 / timeMeterGranularity) * uiScale;
-				GUI.Label (Rect (32,timeMeterScale + (i*(timeMeterScale * 0.75)),timeMeterScale,timeMeterScale), timeMeterTexture);
+				GUI.Label (Rect (timeMeterScale + (i*(timeMeterScale * 0.75)),32,timeMeterScale,timeMeterScale), timeMeterTexture);
 			}
 		}
 	}

@@ -1,8 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/CorgiGameFlow.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Corrgi Assets\Scripts\UIGame.js">
     <Files>
-      <File FileName="Assets/CorgiGameFlow.js" Line="1" Column="1" />
+      <File FileName="Assets\Corrgi Assets\Scripts\UIGame.js" Line="28" Column="70" />
+      <File FileName="Assets\CorgiGameFlow.js" Line="43" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
