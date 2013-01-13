@@ -13,3 +13,4 @@ Temp
 *.exe
 *.vcproject
 *.sln
+*.csproj
