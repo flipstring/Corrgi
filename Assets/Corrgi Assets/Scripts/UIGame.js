@@ -1,6 +1,9 @@
 #pragma strict
 
 var timeMeterTexture : Texture2D;
+var startBannerTexture : Texture2D;
+var endBannerTexture : Texture2D;
+
 var timeMeterGranularity : float = 12;
 
 function Start () {
@@ -26,6 +29,13 @@ function OnGUI ()
 			}
 		}
 	}
-	else
-		GUI.TextField(Rect (256,256,768,512), "Hit Fire1 (ctrl) to start");
+	else if(GetComponent(CorgiGameFlow).gameState == GameState.PostGame)
+	{
+		GUI.Label (Rect (128*uiScale,30,1024*uiScale,256*uiScale), endBannerTexture);
+	}
+	else if(GetComponent(CorgiGameFlow).gameState == GameState.PreGame)
+	{
+		GUIUtility.RotateAroundPivot(Mathf.Sin(Time.realtimeSinceStartup*2)*4, Vector2(Screen.width/2,Screen.height/2));
+		GUI.Label (Rect (128*uiScale,232*uiScale,1024*uiScale,256*uiScale), startBannerTexture);
+	}
 }
