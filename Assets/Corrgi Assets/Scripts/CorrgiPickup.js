@@ -7,6 +7,8 @@ var bounceSpeed : float = 4.0;
 var bounceYaw : float = 15.0;
 var inventoryKey  = "corrgi";
 
+private var isActive = true;
+
 function Start () 
 {
 	
@@ -14,7 +16,15 @@ function Start ()
 
 function Awake()
 {
-	defaultHeight = transform.position.y;
+	defaultHeight = transform.position.y;	// ## flip to do a terrain raycast
+	ResetState();
+}
+
+function ResetState()
+{
+	isActive = true;
+	GetComponent(BoxCollider).active = true;
+	GetComponentInChildren(MeshRenderer).active = true;
 }
 
 function Update () 
@@ -25,11 +35,16 @@ function Update ()
 
 function OnTriggerEnter(other : Collider)
 {
-	if(other.gameObject.tag == "Player")
-	{
-		Debug.Log("Pickup hit!");
-		// ## disable collision, mesh
+	// if we're alive and a player just hit us...
+	if(isActive && other.gameObject.tag == "Player")
+	{	
+		// disable collision (and mesh)
+		isActive = false;
+		GetComponent(BoxCollider).active = false;
+		
 		// ## start particle effect
-		// ## register with inventory
+		
+		// register with the colliding player's inventory
+		other.gameObject.GetComponent(CorrgiInventory).CollectPickup(this);
 	}
 }

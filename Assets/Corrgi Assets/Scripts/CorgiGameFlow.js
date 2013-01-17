@@ -38,7 +38,7 @@ function Update ()
    {
    		roundTimeRemaining -= Time.deltaTime;
    
-        if(roundTimeRemaining < 0)
+        if(roundTimeRemaining < 0 || Input.GetButton("DebugEndLevel"))
    			StopRound();
    }
 }
